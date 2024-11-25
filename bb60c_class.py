@@ -33,7 +33,7 @@ class BB60C_INTERFACE:
     bandwidth = 20.0e6 / decimation
 
     ## Constructor
-    def __init__(self, ref_level=-30.0, center_freq=1.0e9, num_captures=1):
+    def __init__(self, ref_level=-60.0, center_freq=1.0e9, num_captures=10):
         self.data = []
         self.avg_data = []
         self.fft_data = []
@@ -58,11 +58,11 @@ class BB60C_INTERFACE:
     
     def capture_data(self):
         print("Capturing...")
-        captures = []
-        for i in range(self.num_captures):
+        acquisition = []
+        for _ in range(self.num_captures):
             iq = bb_get_IQ_unpacked(self.handle, self.samples_per_capture, BB_FALSE)["iq"]
-            captures.append(iq)
-        self.data.append(captures)
+            acquisition.append(iq)
+        self.data.append(acquisition)
         print('Calculating DFT...')
         self.calc_fft()
         return
@@ -74,13 +74,20 @@ class BB60C_INTERFACE:
         for capture in acquisition:
             ## DFT of the capture
             dft = fftshift(fft(capture * self.window))
-            fft_acquisition.append(dft) 
+            dft_pwr = 20*np.log10(np.abs(dft)/self.samples_per_capture)
+            fft_acquisition.append(dft_pwr) 
         ## save only the average of the DFTs of the captures
         self.fft_data.append(np.mean(fft_acquisition, axis=0))
 
     def plot_fft(self):
-        plt.plot(self.freqs, 20*np.log10(np.abs(self.fft_data[-1])/self.samples_per_capture))
+        plt.plot(self.freqs, self.fft_data[-1])
+        plt.title('FFT Average in Frequency')
         plt.show()
-    # def calculate_avg_data(self):
-    #     for capture in self.data:
-    #         self.avg_data.append(np.mean(capture, axis=0))
+
+    def calculate_avg_time(self):
+         acquisition = self.data[-1]
+         avg_data = np.mean(acquisition, axis=0)
+         dft = fftshift(fft(avg_data * self.window))
+         plt.plot(self.freqs, 20*np.log10(np.abs(dft)/self.samples_per_capture))
+         plt.title('Average in Time')
+         plt.show()

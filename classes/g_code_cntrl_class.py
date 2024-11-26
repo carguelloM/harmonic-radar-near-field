@@ -126,6 +126,8 @@ class PrinterController:
                     self.table_down(int(num))
                 case 'k':
                     self.finish_move()
+                    self.send_command()
+                    return
                 case _:
                     print('Invalid Key')
             self.send_command()

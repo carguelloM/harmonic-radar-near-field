@@ -26,7 +26,7 @@ class PrinterController:
         print('Setting correct values of [steps per mm]')
         self.ser_dev.write("$=100=6.25".encode()) ## x axis
         self.ser_dev.write("$101=6.25".encode()) ## y axis 
-        self.ser_dev.write("$102=25".encode()) ## z axis 
+        self.ser_dev.write("$102=200".encode()) ## z axis 
         self.read_serial()
         return 
     

@@ -102,9 +102,9 @@ class PrinterController:
     
     def finish_move(self):
         print('Finishing Move')
-        self.x_pos = 1
-        self.y_pos = 1
-        self.z_pos = 1
+        self.x_pos = 0
+        self.y_pos = 0
+        self.z_pos = 0
         return
 
     ################# HIGH LEVEL ROUTINES #################

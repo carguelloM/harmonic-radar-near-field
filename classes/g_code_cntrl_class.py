@@ -24,9 +24,14 @@ class PrinterController:
     ################# Init Routines #################
     def set_steps_mm(self):
         print('Setting correct values of [steps per mm]')
-        self.ser_dev.write("$=100=6.25".encode()) ## x axis
-        self.ser_dev.write("$101=6.25".encode()) ## y axis 
-        self.ser_dev.write("$102=200".encode()) ## z axis 
+        self.ser_dev.write("$100=6.25\n".encode()) ## x axis
+        time.sleep(1)
+        self.read_serial()
+        self.ser_dev.write("$101=6.25\n".encode()) ## y axis 
+        time.sleep(1)
+        self.read_serial()
+        self.ser_dev.write("$102=25\n".encode()) ## z axis 
+        time.sleep(1)
         self.read_serial()
         return 
     
@@ -45,6 +50,7 @@ class PrinterController:
         ## remind user to manually set the printer to 0,0,0
         _ = input('Is the printer in position 0,0?')
         self.send_command() ## init to position 1,1,1
+        self.read_serial()
         self.set_steps_mm() ## set correct steps per mm
         return True
 
@@ -62,6 +68,7 @@ class PrinterController:
         print('Sending Command: ' + command)
         self.ser_dev.write(command.encode())
         time.sleep(1)
+        self.read_serial()
         return
 
  

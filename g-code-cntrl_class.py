@@ -78,11 +78,11 @@ class PrinterController:
 
     def move_left(self, num_steps):
         print('Moving Left')
-        self.x_pos = self.x_pos - num_steps
+        self.x_pos = self.x_pos + num_steps
         return
 
     def move_right(self, num_steps):
-        self.x_pos = self.x_pos + num_steps
+        self.x_pos = self.x_pos - num_steps
         return 
     
     def table_up(self, num_steps):
@@ -103,6 +103,7 @@ class PrinterController:
     ################# HIGH LEVEL ROUTINES #################
     def interactive_moves(self, single_step=False): 
         while True:
+            print('Move up = w\nMove down = s\nMove left = a\nMove right = d\nTable up = x\nTable down = z\nFinish Move = k')
             key = input('Press a key to move [awsd]')
             key = key.lower()
             if single_step:
@@ -120,9 +121,9 @@ class PrinterController:
                 case 'd':
                     self.move_right(int(num))
                 case 'x':
-                    self.table_up()
+                    self.table_up(int(num))
                 case 'z':
-                    self.table_down()
+                    self.table_down(int(num))
                 case 'k':
                     self.finish_move()
                 case _:

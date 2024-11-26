@@ -1,7 +1,7 @@
-import bb60c_class
+from bb60c_class import BB60C_INTERFACE
 
 # Create an instance of the BB60C class
-bb60c = bb60c_class.BB60C_INTERFACE()
+bb60c = BB60C_INTERFACE()
 ## initialize the device
 bb60c.initialize_device()
 ## capture data

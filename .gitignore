@@ -1,2 +1,5 @@
 # lock file
 *.lock
+
+## pycache dir 
+__pycache__/

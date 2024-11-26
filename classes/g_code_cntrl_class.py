@@ -30,7 +30,7 @@ class PrinterController:
         self.read_serial()
         return 
     
-    def inti_controller(self):
+    def init_controller(self):
         ## find the arduino
         port = self.find_arduino()
         if not port:

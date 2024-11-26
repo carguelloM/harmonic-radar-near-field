@@ -1,4 +1,4 @@
-from bb_api import *
+from classes.bb_api import *
 import numpy as np
 import scipy.fftpack
 from scipy import signal

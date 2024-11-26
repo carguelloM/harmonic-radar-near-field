@@ -1,4 +1,4 @@
-from bb60c_class import BB60C_INTERFACE
+from classes.bb60c_class import BB60C_INTERFACE
 
 # Create an instance of the BB60C class
 bb60c = BB60C_INTERFACE()

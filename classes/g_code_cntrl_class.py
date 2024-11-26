@@ -35,7 +35,7 @@ class PrinterController:
         port = self.find_arduino()
         if not port:
             print('Arduino not found')
-            return
+            return False
         ## open the serial port
         self.ser_dev = serial.Serial(port, 115200, timeout=1)
         time.sleep(2) ## wait for the serial port to open
@@ -46,7 +46,7 @@ class PrinterController:
         _ = input('Is the printer in position 0,0?')
         self.send_command() ## init to position 1,1,1
         self.set_steps_mm() ## set correct steps per mm
-        return
+        return True
 
 
     ######### Serial communication routines #########

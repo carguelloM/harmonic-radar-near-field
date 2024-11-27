@@ -25,10 +25,10 @@ if __name__=="__main__":
     gantry.move_left(191) ## X position 1->192
     gantry.send_command()
 
-    gantry.move_up(12) ## Y position 1->13
+    gantry.move_up(11) ## Y position 1->12
     gantry.send_command()
 
-    gantry.table_up(150) ## Z position 1->151
+    gantry.table_up(112) ## Z position 1->113
     gantry.send_command()
 
     ## Start the scan

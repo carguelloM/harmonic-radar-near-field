@@ -123,9 +123,7 @@ class BB60C_INTERFACE:
         self.dir = dir
 
     def set_comment(self, comment):
-        basic_comment = 'Reference Level: ' + str(self.ref_level) + ' dBm\n' + 'Center Frequency: ' 
-        + str(self.center_freq) + ' Hz\n' + 'Decimation: ' + str(self.decimation) + '\n' 
-        + 'Filter Bandwidth: ' + str(self.filter_bw) + ' Hz\n'
+        basic_comment = 'Reference Level: ' + str(self.ref_level) + ' dBm\n' + 'Center Frequency: ' + str(self.center_freq) + ' Hz\n' + 'Decimation: ' + str(self.decimation) + '\n' + 'Filter Bandwidth: ' + str(self.filter_bw) + ' Hz\n'
         self.comment = basic_comment + comment
 
     def plot_fft(self, spectrum_index):

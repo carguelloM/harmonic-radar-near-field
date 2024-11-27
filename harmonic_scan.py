@@ -49,7 +49,7 @@ if __name__=="__main__":
         gantry.send_command()
         time.sleep(5)
         ## move the gantry up 6 mm
-        gantry.move_up(step_inc)
+        gantry.table_up(step_inc)
         gantry.send_command()
         time.sleep(5)
 

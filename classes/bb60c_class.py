@@ -37,6 +37,7 @@ class BB60C_INTERFACE:
         ## Data
         self.data = []
         self.fft_data = []
+        self.peaks_indxs = []
         self.peaks = []
         self.dir = None
         self.num_captures = num_captures
@@ -106,6 +107,7 @@ class BB60C_INTERFACE:
             if(len(peaks) > 0):
                 closest_to_zero = np.argmin(np.abs(peaks - center_indx))
                 single_peak = peaks[closest_to_zero]
+                self.peaks_indxs.append(single_peak)
                 self.peaks.append(spectrum[single_peak])
             else:
                 self.peaks.append(None)
@@ -125,8 +127,8 @@ class BB60C_INTERFACE:
         
         plt.plot(self.freqs, self.fft_data[spectrum_index], label='FFT Spectrum')
         if self.peaks[spectrum_index] is not None:
-            plt.scatter(self.freqs[self.peaks[spectrum_index]], self.fft_data[spectrum_index][self.peaks[spectrum_index]], 
-                    color='red', marker='x', label=f'Peak Value = {self.fft_data[spectrum_index][self.peaks[spectrum_index]]}')
+            plt.scatter(self.freqs[self.peaks[spectrum_index]], self.fft_data[spectrum_index][self.peaks_indxs[spectrum_index]], 
+                    color='red', marker='x', label=f'Peak Value = {self.fft_data[spectrum_index][self.peaks_indxs[spectrum_index]]}')
         plt.title(f'FFT Spectrum #{spectrum_index}')
         plt.legend()
         plt.xlabel('Frequency (Hz)')
@@ -145,5 +147,6 @@ class BB60C_INTERFACE:
             fn = self.dir + '/' + fn 
 
         with open(fn, 'wb') as f:
-            data_to_save = {'raw_iq': self.data, 'fft_avg': self.fft_data, 'peaks': self.peaks}
+            data_to_save = {'raw_iq': self.data, 'fft_avg': self.fft_data, 'peaks': self.peaks, 
+                            'peaks_indxs': self.peaks_indxs}
             pickle.dump(data_to_save, f)

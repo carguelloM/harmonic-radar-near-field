@@ -127,7 +127,7 @@ class BB60C_INTERFACE:
         
         plt.plot(self.freqs, self.fft_data[spectrum_index], label='FFT Spectrum')
         if self.peaks[spectrum_index] is not None:
-            plt.scatter(self.freqs[self.peaks[spectrum_index]], self.fft_data[spectrum_index][self.peaks_indxs[spectrum_index]], 
+            plt.scatter(self.freqs[self.peaks_indxs[spectrum_index]], self.fft_data[spectrum_index][self.peaks_indxs[spectrum_index]], 
                     color='red', marker='x', label=f'Peak Value = {self.fft_data[spectrum_index][self.peaks_indxs[spectrum_index]]}')
         plt.title(f'FFT Spectrum #{spectrum_index}')
         plt.legend()

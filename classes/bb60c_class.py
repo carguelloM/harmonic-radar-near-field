@@ -37,6 +37,7 @@ class BB60C_INTERFACE:
         self.data = []
         self.fft_data = []
         self.peaks = []
+        self.dir = None
         self.num_captures = num_captures
         
         ## Device Related
@@ -54,8 +55,6 @@ class BB60C_INTERFACE:
          ## DFT Related
         self.freqs = fftshift(np.fft.fftfreq(self.samples_per_capture, 1/self.bandwidth))
         self.window = signal.windows.flattop(self.samples_per_capture)
-
-    ## Methods
 
     ######## DEVICE MANAGEMENT ########
     def initialize_device(self):
@@ -80,7 +79,7 @@ class BB60C_INTERFACE:
         self.calc_fft()
         return
 
-    #### DFT CALCULATIONS ####
+    ##### DFT RELATED CALCULATIONS ####
     def calc_fft(self):
         fft_acquisition = []
         ## last acquisition (i.e. 10 capture)
@@ -93,34 +92,50 @@ class BB60C_INTERFACE:
         ## save only the average of the DFTs of the captures
         self.fft_data.append(np.mean(fft_acquisition, axis=0))
 
-    # def find_peaks(self):
-    #     for spectrum in self.fft_data:
-    #         peaks = signal.find_peaks(spectrum, height=20)
-    #         self.peaks.append(peaks)
-        
-    def plot_fft(self):
-        center_indx = int(len(self.fft_data[-1])/2)
-        peaks, _ = signal.find_peaks(self.fft_data[-1], prominence=1)
+    def find_peaks(self):
+        center_indx = int(self.samples_per_capture/2) ## note all FFTs are the same size
+        for spectrum in self.fft_data:
+            peaks, _ = signal.find_peaks(spectrum, prominence=1)
 
-        if(len(peaks) > 0):
-            closest_to_zero = np.argmin(np.abs(peaks - center_indx))
-            peak = peaks[closest_to_zero]
-            plt.scatter(self.freqs[peak], self.fft_data[-1][peak], color='red')
-
-        plt.plot(self.freqs, self.fft_data[-1])
-        plt.title('FFT Average in Frequency')
-        plt.show()
-
-    def calculate_avg_time(self):
-         acquisition = self.data[-1]
-         avg_data = np.mean(acquisition, axis=0)
-         dft = fftshift(fft(avg_data * self.window))
-         plt.plot(self.freqs, 20*np.log10(np.abs(dft)/self.samples_per_capture))
-         plt.title('Average in Time')
-         plt.show()
+            '''
+            check if there's a peak at the center frequency
+            for the scanning experiments this should be the case most of the time
+            given the spurious second harmonic WE are transmitting
+            '''
+            if(len(peaks) > 0):
+                closest_to_zero = np.argmin(np.abs(peaks - center_indx))
+                single_peak = peaks[closest_to_zero]
+                self.peaks.append(single_peak)
+            else:
+                self.peaks.append(None)
     
+
+    #### DATA MANAGEMENT ####
+    def set_dir(self, dir):
+        self.dir = dir
+
+    def plot_fft(self, spectrum_index):
+        fig_path = 'fft_spectrum_' + str(spectrum_index) + '.png'
+
+        if self.dir:
+            fig_path = self.dir + '/' + fig_path
+        
+        plt.plot(self.freqs, self.fft_data[spectrum_index])
+        plt.scatter(self.freqs[self.peaks[spectrum_index]], self.fft_data[self.peaks[spectrum_index]], 
+                    color='red', marker='x', label=f'Peak Value = {self.fft_data[self.peaks[spectrum_index]]}')
+        plt.title(f'FFT Spectrum #{spectrum_index}')
+        plt.legend()
+        plt.savefig(fig_path)
+        plt.close()
+
+
     def save_data(self, filename='data'):
         fn = filename + '.pkl'
+
+        ## if directory is specified add path before filename
+        if self.dir:
+            fn = self.dir + '/' + fn 
+
         with open(fn, 'wb') as f:
             data_to_save = {'raw_iq': self.data, 'fft_avg': self.fft_data, 'peaks': self.peaks}
             pickle.dump(data_to_save, f)

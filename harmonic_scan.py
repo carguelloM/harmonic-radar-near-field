@@ -42,11 +42,16 @@ if __name__=="__main__":
             bb60c.capture_data()
             ## move the gantry 6 mm to the right
             gantry.move_right(step_inc)
+            gantry.send_command()
             time.sleep(5)
         ## reset x position to leftmost position
         gantry.move_left(step_inc*num_cols)
+        gantry.send_command()
+        time.sleep(5)
         ## move the gantry up 6 mm
         gantry.move_up(step_inc)
+        gantry.send_command()
+        time.sleep(5)
 
     ## get all peaks for FFTs 
     bb60c.get_fft_peaks()

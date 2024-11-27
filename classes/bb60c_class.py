@@ -87,12 +87,12 @@ class BB60C_INTERFACE:
         for capture in acquisition:
             ## DFT of the capture
             dft = fftshift(fft(capture * self.window))
-            dft_pwr = 20*np.log10(np.abs(dft)/self.samples_per_capture)
+            dft_pwr = 20*np.log10(np.abs(dft)/self.samples_per_capture) + 13.01
             fft_acquisition.append(dft_pwr) 
         ## save only the average of the DFTs of the captures
         self.fft_data.append(np.mean(fft_acquisition, axis=0))
 
-    def find_peaks(self):
+    def get_fft_peaks(self):
         center_indx = int(self.samples_per_capture/2) ## note all FFTs are the same size
         for spectrum in self.fft_data:
             peaks, _ = signal.find_peaks(spectrum, prominence=1)
@@ -120,13 +120,18 @@ class BB60C_INTERFACE:
         if self.dir:
             fig_path = self.dir + '/' + fig_path
         
-        plt.plot(self.freqs, self.fft_data[spectrum_index])
-        plt.scatter(self.freqs[self.peaks[spectrum_index]], self.fft_data[self.peaks[spectrum_index]], 
+        plt.plot(self.freqs, self.fft_data[spectrum_index], label='FFT Spectrum')
+        if self.peaks[spectrum_index] is not None:
+            plt.scatter(self.freqs[self.peaks[spectrum_index]], self.fft_data[self.peaks[spectrum_index]], 
                     color='red', marker='x', label=f'Peak Value = {self.fft_data[self.peaks[spectrum_index]]}')
         plt.title(f'FFT Spectrum #{spectrum_index}')
         plt.legend()
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Power (dBm)')
         plt.savefig(fig_path)
         plt.close()
+        self.logger.info(f'FFT Spectrum {spectrum_index} plotted and saved to {fig_path}')
+        return
 
 
     def save_data(self, filename='data'):

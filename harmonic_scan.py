@@ -26,7 +26,7 @@ if __name__=="__main__":
     gantry.move_left(191) ## X position 1->192
     gantry.send_command()
     time.sleep(30)
-    gantry.move_up(11) ## Y position 1->12
+    gantry.move_up(10) ## Y position 1->11
     gantry.send_command()
     time.sleep(30)
     gantry.table_up(112) ## Z position 1->113

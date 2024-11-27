@@ -5,6 +5,7 @@ from scipy.fft import fft, fftshift
 import matplotlib.pyplot as plt
 import logging
 import pickle
+import os
 '''
 data
 |-> acquisition 1
@@ -112,6 +113,8 @@ class BB60C_INTERFACE:
 
     #### DATA MANAGEMENT ####
     def set_dir(self, dir):
+        if not os.path.exists(dir):
+            os.makedirs(dir)
         self.dir = dir
 
     def plot_fft(self, spectrum_index):

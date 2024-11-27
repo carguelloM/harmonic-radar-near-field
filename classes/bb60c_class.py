@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import logging
 import pickle
 import os
+
 '''
 data
 |-> acquisition 1
@@ -20,9 +21,9 @@ data
     |-> capture_num_captures
 |-> ...
 
-avg_data
-|-> acquisition 1 (average of all captures)
-|-> acquisition 2 (average of all captures)
+fft_data
+|-> fft acquisition 1 (average of all captures)
+|-> fft acquisition 2 (average of all captures)
 |-> ...
 '''
 
@@ -40,6 +41,7 @@ class BB60C_INTERFACE:
         self.peaks_indxs = []
         self.peaks = []
         self.dir = None
+        self.comment = None
         self.num_captures = num_captures
         
         ## Device Related
@@ -69,6 +71,7 @@ class BB60C_INTERFACE:
     
     def close_device(self):
         bb_close_device(self.handle)
+        self.logger.info('Device Closed')
     
     def capture_data(self):
         self.logger.info('CAPTURING...')
@@ -119,6 +122,12 @@ class BB60C_INTERFACE:
             os.makedirs(dir)
         self.dir = dir
 
+    def set_comment(self, comment):
+        basic_comment = 'Reference Level: ' + str(self.ref_level) + ' dBm\n' + 'Center Frequency: ' 
+        + str(self.center_freq) + ' Hz\n' + 'Decimation: ' + str(self.decimation) + '\n' 
+        + 'Filter Bandwidth: ' + str(self.filter_bw) + ' Hz\n'
+        self.comment = basic_comment + comment
+
     def plot_fft(self, spectrum_index):
         fig_path = 'fft_spectrum_' + str(spectrum_index) + '.png'
 
@@ -148,5 +157,7 @@ class BB60C_INTERFACE:
 
         with open(fn, 'wb') as f:
             data_to_save = {'raw_iq': self.data, 'fft_avg': self.fft_data, 'peaks': self.peaks, 
-                            'peaks_indxs': self.peaks_indxs}
+                            'peaks_indxs': self.peaks_indxs, 'Description': self.comment}  
             pickle.dump(data_to_save, f)
+        self.logger.info(f'Data saved to {fn}')
+        return

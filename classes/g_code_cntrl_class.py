@@ -148,3 +148,5 @@ class PrinterController:
                     self.logger.error('Invalid Key')
             self.send_command()
 
+    def get_coordinates(self):
+        return self.x_pos, self.y_pos, self.z_pos

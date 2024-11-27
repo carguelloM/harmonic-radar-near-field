@@ -1,4 +1,5 @@
 import classes
+import time
 from classes.bb60c_class import BB60C_INTERFACE
 from classes.g_code_cntrl_class import PrinterController
 
@@ -24,13 +25,13 @@ if __name__=="__main__":
     ## Move th gantry to the correct position 
     gantry.move_left(191) ## X position 1->192
     gantry.send_command()
-
+    time.sleep(30)
     gantry.move_up(11) ## Y position 1->12
     gantry.send_command()
-
+    time.sleep(30)
     gantry.table_up(112) ## Z position 1->113
     gantry.send_command()
-
+    time.sleep(30)
     ## Start the scan
     step_inc = 6 ## each step is 6 mm (3x8 grid)
     num_rows = 8
@@ -41,7 +42,7 @@ if __name__=="__main__":
             bb60c.capture_data()
             ## move the gantry 6 mm to the right
             gantry.move_right(step_inc)
-
+            time.sleep(5)
         ## reset x position to leftmost position
         gantry.move_left(step_inc*num_cols)
         ## move the gantry up 6 mm

@@ -106,7 +106,7 @@ class BB60C_INTERFACE:
             if(len(peaks) > 0):
                 closest_to_zero = np.argmin(np.abs(peaks - center_indx))
                 single_peak = peaks[closest_to_zero]
-                self.peaks.append(single_peak)
+                self.peaks.append(spectrum[single_peak])
             else:
                 self.peaks.append(None)
     

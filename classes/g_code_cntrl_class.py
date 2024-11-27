@@ -1,16 +1,23 @@
 import serial
 from serial.tools import list_ports
 import time
+import logging
 
 class PrinterController:
 
     ## Constructor
     def __init__(self):
+        ## Logging
+        self.logger = logging.getLogger("PRINTER")
+
+        ## Coordinates
         self.x_pos = 1
         self.y_pos = 1
         self.z_pos = 1
         self.ser_dev = None
     
+    ################# Init Routines #################
+
     def find_arduino(self):
         ## list ports 
         ports = list_ports.comports()
@@ -21,9 +28,8 @@ class PrinterController:
                 return port.device
         return None
     
-    ################# Init Routines #################
     def set_steps_mm(self):
-        print('Setting correct values of [steps per mm]')
+        self.logger.info('Setting correct values of [steps per mm]')
         self.ser_dev.write("$100=6.25\n".encode()) ## x axis
         time.sleep(1)
         self.read_serial()
@@ -39,12 +45,12 @@ class PrinterController:
         ## find the arduino
         port = self.find_arduino()
         if not port:
-            print('Arduino not found')
+            self.logger.error('Arduino not found')
             return False
         ## open the serial port
         self.ser_dev = serial.Serial(port, 115200, timeout=1)
         time.sleep(2) ## wait for the serial port to open
-        print('Serial Port Opened')
+        self.logger.info('Serial Port Opened')
         self.read_serial()
         
         ## remind user to manually set the printer to 0,0,0
@@ -61,11 +67,11 @@ class PrinterController:
             resp = self.ser_dev.readline()
             if not resp:
                 return ## done reading data from serial port
-            print(resp)
+            self.logger.info(resp)
     
     def send_command(self):
         command = "G0 X" + str(self.x_pos) +" Y" +str(self.y_pos) + " Z" +str(self.z_pos) + '\n'
-        print('Sending Command: ' + command)
+        self.logger.info('SENDING COMMAND: ' + command)
         self.ser_dev.write(command.encode())
         time.sleep(1)
         self.read_serial()
@@ -74,34 +80,37 @@ class PrinterController:
  
     ################# Movement Routines #################
     def move_up(self, num_steps):
-        print('Moving Up')
+        self.logger.info('MOVING UP')
         self.y_pos = self.y_pos + num_steps
         return 
     
     def move_down(self, num_steps):
-        print('Moving Down')
+        self.logger.info('MOVING DOWN')
         self.y_pos = self.y_pos - num_steps
         return
 
     def move_left(self, num_steps):
-        print('Moving Left')
+        self.logger.info('MOVING LEFT')
         self.x_pos = self.x_pos + num_steps
         return
 
     def move_right(self, num_steps):
+        self.logger.info('MOVING RIGHT')
         self.x_pos = self.x_pos - num_steps
         return 
     
     def table_up(self, num_steps):
+        self.logger.info('TABLE UP')
         self.z_pos = self.z_pos + num_steps
         return
     
     def table_down(self, num_steps):
+        self.logger.info('TABLE DOWN')
         self.z_pos = self.z_pos - num_steps
         return
     
     def finish_move(self):
-        print('Finishing Move')
+        self.logger.critical('GOING TO 0,0,0')
         self.x_pos = 0
         self.y_pos = 0
         self.z_pos = 0
@@ -136,6 +145,6 @@ class PrinterController:
                     self.send_command()
                     return
                 case _:
-                    print('Invalid Key')
+                    self.logger.error('Invalid Key')
             self.send_command()
 

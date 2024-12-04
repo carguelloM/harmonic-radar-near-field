@@ -111,9 +111,14 @@ class PrinterController:
     
     def finish_move(self):
         self.logger.critical('GOING TO 0,0,0')
-        self.x_pos = 0
-        self.y_pos = 0
         self.z_pos = 0
+        self.send_command()
+        time.sleep(10)
+        self.y_pos = 0
+        self.send_command()
+        time.sleep(10)
+        self.x_pos = 0
+        self.send_command()
         return
 
     ################# HIGH LEVEL ROUTINES #################
@@ -142,7 +147,6 @@ class PrinterController:
                     self.table_down(int(num))
                 case 'k':
                     self.finish_move()
-                    self.send_command()
                     return
                 case _:
                     self.logger.error('Invalid Key')

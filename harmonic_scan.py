@@ -23,13 +23,13 @@ if __name__=="__main__":
         exit(-1)
     
     ## Move th gantry to the correct position 
-    gantry.move_left(191) ## X position 1->192
+    gantry.move_left(173) ## X position 1->174
     gantry.send_command()
     time.sleep(30)
-    gantry.move_up(10) ## Y position 1->11
+    gantry.move_up(32) ## Y position 1->33
     gantry.send_command()
     time.sleep(30)
-    gantry.table_up(112) ## Z position 1->113
+    gantry.table_up(74) ## Z position 1->75
     gantry.send_command()
     time.sleep(30)
     ## Start the scan

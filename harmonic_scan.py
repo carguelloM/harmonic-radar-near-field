@@ -23,7 +23,7 @@ if __name__=="__main__":
         exit(-1)
     
     ## Move th gantry to the correct position 
-    gantry.move_left(167) ## X position 1->168
+    gantry.move_left(174) ## X position 1->174
     gantry.send_command()
     time.sleep(30)
     gantry.move_up(30) ## Y position 1->31
